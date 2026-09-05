@@ -3,42 +3,33 @@ using UnityEngine;
 
 public class ChessBoard : MonoBehaviour
 {
-    public int size = 8;
-    public float cellSize = 1f;
-    public Color lightColor = new Color(0.9f, 0.9f, 0.8f);
-    public Color darkColor = new Color(0.3f, 0.3f, 0.25f);
+    [Header("Board Settings")]
+    public int boardSize = 8;
+    public float squareSize = 1f;
 
-    
-    public Vector3 GetWorldPosition(int col, int row)
-    {
-        Vector3 origin = transform.position;
-        return origin + new Vector3(col * cellSize, 0f, row * cellSize);
-    }
+    [Header("Colors")]
+    public Color lightColor = Color.white;
+    public Color darkColor = Color.gray;
 
     private void OnDrawGizmos()
     {
         Vector3 origin = transform.position;
 
-       
-        for (int row = 0; row < size; row++)
+        // Nested loop -> 8x8 grid
+        for (int x = 0; x < boardSize; x++)
         {
-            for (int col = 0; col < size; col++)
+            for (int y = 0; y < boardSize; y++)
             {
+                bool isLightSquare = (x + y) % 2 == 0;
+                Gizmos.color = isLightSquare ? lightColor : darkColor;
+
                 Vector3 center = origin + new Vector3(
-                    col * cellSize + cellSize * 0.5f,
-                    0f,
-                    row * cellSize + cellSize * 0.5f);
+                    x * squareSize + squareSize * 0.5f,
+                    y * squareSize + squareSize * 0.5f,
+                    0f
+                );
 
-           
-                bool isLight = (row + col) % 2 == 0;
-                Gizmos.color = isLight ? lightColor : darkColor;
-
-                Vector3 cubeSize = new Vector3(cellSize, 0.02f, cellSize);
-                Gizmos.DrawCube(center, cubeSize);
-
-               
-                Gizmos.color = Color.black;
-                Gizmos.DrawWireCube(center, cubeSize);
+                Gizmos.DrawWireCube(center, new Vector3(squareSize, squareSize, 0.01f));
             }
         }
     }
